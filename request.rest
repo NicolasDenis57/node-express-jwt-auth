@@ -1,0 +1,23 @@
+POST http://localhost:3000/signup
+
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+  "email": "votre_email",
+  "password": "votre_mot_de_passe"
+}
+
+###
+
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{
+  "email": "votre_email",
+  "password": "votre_mot_de_passe"
+}
+
