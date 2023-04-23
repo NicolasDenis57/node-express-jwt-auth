@@ -19,10 +19,12 @@
   "homepage": "https://github.com/NicolasDenis57/node-express-jwt-auth#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "joi": "^17.9.1",
+    "jsonwebtoken": "^9.0.0",
     "pg": "^8.10.0"
   }
 }

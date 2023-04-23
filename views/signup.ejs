@@ -21,7 +21,7 @@
 
     <label for="confirmPassword">Confirm Password</label>
     <input type="password" name="confirmPassword" required/>
-    <div class="password error"></div>
+    <div class="confirmPassword error"></div>
 
     <button type="submit">Sign up</button>
 </form>
@@ -29,7 +29,7 @@
 <script>
     const form = document.querySelector('form');
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const firstname = form.firstname.value;
@@ -38,7 +38,22 @@
         const password = form.password.value;
         const confirmPassword = form.confirmPassword.value;
 
-        console.log(firstname, lastname, email, password, confirmPassword)
+        try{
+            const result = await fetch('/signup', {
+                method: 'POST',
+                body: JSON.stringify({ firstname, lastname, email, password, confirmPassword }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            const data = await result.json();
+            if (data.user) {
+                location.assign('/');
+            }
+            
+        } 
+        catch(error) {
+            console.log(error)
+        }
+
     });
 </script>
 

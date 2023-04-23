@@ -31,6 +31,11 @@ const userSchema = Joi.object({
     'string.min': 'Le nom doit contenir au moins 1 caractère',
     'any.required': 'Le nom est requis',
     'string.empty': 'Veuillez entrer un nom'
+  }),
+   confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
+    'any.only': 'Les mots de passe doivent correspondre',
+    'any.required': 'Veuillez confirmer votre mot de passe',
+    'string.empty': 'Veuillez entrer votre mot de passe de confirmation'
   })
 });
 
