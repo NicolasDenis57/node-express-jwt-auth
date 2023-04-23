@@ -1,6 +1,7 @@
+// cette classe permet de créer des erreurs personnalisées qui seront utilisées dans les routes pour retourner des erreurs au client.
 class APIError extends Error {
     constructor(message,code){
-        super(message); // new Error(message) - super permet d'appeler le constructeur du parent
+        super(message);
         this.code = code;
     }
 };
