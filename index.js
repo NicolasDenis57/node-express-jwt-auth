@@ -1,8 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const port = process.env.PORT || 3000;
-
 const app = express();
+const port = process.env.PORT || 3000;
 
 // middleware
 app.use(express.static('public'));
@@ -11,8 +10,11 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 // routes
-app.get('/', (req, res) => res.render('home'));
-app.get('/smoothies', (req, res) => res.render('smoothies'));
+const routeBase = './app/routers'
+const authRoutes = require(`${routeBase}/authRoutes`);
+const appRoutes = require(`${routeBase}/appRoutes`);
+
+app.use(authRoutes, appRoutes);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
