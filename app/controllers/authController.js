@@ -3,6 +3,8 @@ const User = require("../models/AppUser");
 // On appelle ici le service d'erreur APIError qui permet de gérer les erreurs de manière plus propre.
 const APIError = require("../services/error/APIError");
 
+const bcrypt = require("bcrypt");
+
 const authController = {
   signup_get(req, res) {
     res.render("signup");
@@ -13,8 +15,14 @@ const authController = {
   async signup_post(req, res, next) {
     const { email, password, firstname, lastname } = req.body;
 
+    if (password !== confirmPassword) {
+      return next(new APIError("Les mots de passe ne correspondent pas", 400));
+    }
+
     try {
-      const user = await User.create({ email, password, lastname, firstname });
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = await User.create({ email, password: hashedPassword, lastname, firstname });
       // On envoie un code 201 pour indiquer que la requête a été traitée avec succès et qu'un nouvel élément a été créé. le code 201 correspond à la création d'un nouvel élément.
       res.status(201).json(user);
     } catch (err) {
