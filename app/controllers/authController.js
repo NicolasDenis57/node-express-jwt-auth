@@ -36,7 +36,7 @@ const authController = {
     } catch (err) {
       // On vérifie si l'erreur est une erreur de contrainte de clé unique, si c'est le cas on renvoie une erreur 400 (Bad Request) avec un message d'erreur personnalisé.
       if (err.code === "23505" && err.constraint === "app_user_email_key") {
-        next(new APIError({"error" : "Il existe déjà un compte avec cet email"}, 400));
+        next(new APIError("Il existe déjà un compte avec cet email", 400));
       } else {
         next(err);
       }

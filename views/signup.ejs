@@ -5,29 +5,31 @@
 
     <label for="firstname">Firstname</label>
     <input type="text" name="firstname" required/>
-    <div class="firstname error"></div>
+    
 
     <label for="lastname">Lastname</label>
     <input type="text" name="lastname" required/>
-    <div class="lasname error"></div>
+    
 
     <label for="email">Email</label>
     <input type="text" name="email" required/>
-    <div class="email error"></div>
+    
 
     <label for="password">Password</label>
     <input type="password" name="password" required/>
-    <div class="password error"></div>
+    
 
     <label for="confirmPassword">Confirm Password</label>
     <input type="password" name="confirmPassword" required/>
-    <div class="confirmPassword error"></div>
+
+    <div class="error"></div>
 
     <button type="submit">Sign up</button>
 </form>
 
 <script>
     const form = document.querySelector('form');
+    const errorDiv = document.querySelector('.error');
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -47,11 +49,14 @@
             const data = await result.json();
             if (data.user) {
                 location.assign('/');
+            } else {
+                errorDiv.textContent = data;
             }
             
         } 
         catch(error) {
             console.log(error)
+            errorDiv.textContent = error.message;
         }
 
     });
