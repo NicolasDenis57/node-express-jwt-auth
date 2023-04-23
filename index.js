@@ -17,6 +17,13 @@ const appRoutes = require(`${routeBase}/appRoutes`);
 
 app.use(authRoutes, appRoutes);
 
+// gestion d'erreur
+const errorModule = require("./app/services/error/errorHandler");
+// gestion de l'erreur 404
+app.use(errorModule._404);
+// gestion des erreurs globales
+app.use(errorModule.manage);
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
