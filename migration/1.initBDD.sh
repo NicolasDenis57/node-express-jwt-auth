@@ -5,9 +5,9 @@
 export PGUSER=spedata
 
 # Je supprime la BDD cuisto et l'utilisateur admin_cuisto
-dropdb smmothies
+dropdb smoothies
 echo "BDD supprimée"
-dropuser admin_smmothies
+dropuser admin_smoothies
 echo "admin_smoothies supprimé"
 
 # Je crèe la BDD cuisto et l'utilisateur admin_cuisto
