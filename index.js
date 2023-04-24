@@ -16,8 +16,9 @@ app.set('view engine', 'ejs');
 const routeBase = './app/routers'
 const authRoutes = require(`${routeBase}/authRoutes`);
 const appRoutes = require(`${routeBase}/appRoutes`);
+const apiRoutes = require(`${routeBase}/apiRoutes`);
 
-app.use(authRoutes, appRoutes);
+app.use(authRoutes, appRoutes, apiRoutes);
 
 // gestion d'erreur
 const errorModule = require("./app/services/error/errorHandler");
