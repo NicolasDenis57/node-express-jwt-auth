@@ -8,7 +8,6 @@ const validationModule = {
       const { error } = schema.validate(req[param], { abortEarly: false });
       
       if (error) {
-        console.log(error.details)
         const errors = error.details.map((detail) => detail.message);
         next(new APIError(`Les erreurs suivantes ont été rencontrées : ${errors.join(', ')}`, 400));
       } else {

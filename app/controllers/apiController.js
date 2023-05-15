@@ -64,7 +64,6 @@ const apiController = {
           if (err.code === "23505" && err.constraint === "app_user_email_key") {
             next(new APIError("Il existe déjà un compte avec cet email", 400));
           } else {
-            console.log("ceci est l'erreur", err.message)
             next(err);
             
           }

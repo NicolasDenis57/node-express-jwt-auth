@@ -55,6 +55,15 @@ const updateSchema = Joi.object({
   lastname: nameSchema.optional(),
 });
 
+const loginSchema = Joi.object({
+  email: emailSchema.required().messages({
+    'any.required': 'L\'adresse e-mail est requise',
+  }),
+  password: passwordSchema.required().messages({
+    'any.required': 'Le mot de passe est requis',
+  }),
+});
+
 module.exports = {
-    subscribeSchema, updateSchema
+    subscribeSchema, updateSchema, loginSchema
 };

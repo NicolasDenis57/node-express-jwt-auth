@@ -18,35 +18,27 @@ const authController = {
   login_get(req, res) {
     res.render("login");
   },
-  async signup_post(req, res, next) {
-    const { email, password, firstname, lastname, confirmPassword } = req.body;
-
-    if (password !== confirmPassword) {
-      return next(new APIError("Les mots de passe ne correspondent pas", 400));
-    }
+  async login_post(req, res, next) {
+    const { email, password } = req.body;
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const user = await User.create({ email, password: hashedPassword, lastname, firstname });
-      // On envoie un code 201 pour indiquer que la requête a été traitée avec succès et qu'un nouvel élément a été créé. le code 201 correspond à la création d'un nouvel élément.
+    
+      const user = await User.login(email, password);
       const token = createToken(user.id);
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
-      res.status(201).json({user : user.id});
-    } catch (err) {
-      // On vérifie si l'erreur est une erreur de contrainte de clé unique, si c'est le cas on renvoie une erreur 400 (Bad Request) avec un message d'erreur personnalisé.
-      if (err.code === "23505" && err.constraint === "app_user_email_key") {
-        next(new APIError("Il existe déjà un compte avec cet email", 400));
-      } else {
-        next(err);
-      }
+      res.status(200).json({user : user.id});
+    
+ 
+    }catch(err) {
+      next(new APIError(err.message, 400));
     }
+
   },
-  async login_post(req, res) {
-    const { email, password } = req.body;
-    console.log(email, password);
-    res.send("user login");
-  },
+  async logout_get(req, res) {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.redirect('/');
+  }
 };
 
 module.exports = authController;
+

@@ -47,6 +47,7 @@
                 headers: { 'Content-Type': 'application/json' }
             })
             const data = await result.json();
+            
             if (data.user) {
                 location.assign('/');
             } else {
