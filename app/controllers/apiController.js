@@ -42,8 +42,8 @@ const apiController = {
 
     async createUser(req, res, next) {
         const { email, password, firstname, lastname, confirmPassword } = req.body;
-
-        if (Object.values(req.body).some(value => !value)) {
+      
+        if (Object.values(req.body).every(value => !value)) {
             return next(new APIError("Veuillez remplir tous les champs", 400));
         }
 
@@ -64,6 +64,7 @@ const apiController = {
           if (err.code === "23505" && err.constraint === "app_user_email_key") {
             next(new APIError("Il existe déjà un compte avec cet email", 400));
           } else {
+            console.log("ceci est l'erreur", err.message)
             next(err);
             
           }

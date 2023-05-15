@@ -14,7 +14,8 @@ const errorModule = {
                 res.status(404).json("Not found");
                 break;
             default:
-                res.status(err.code).json("Internal server error");
+                res.status(500).json("Internal server error");
+                console.log(err.message)
                 break;
         }
     },
