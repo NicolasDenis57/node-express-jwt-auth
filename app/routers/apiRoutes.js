@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const apiController = require('../../controllers/apiController');
-const { requireAuth, checkUser }= require('../../middleware/authMiddleware');
-const validationModule = require("../../services/validation/validate");
-const { subscribeSchema, updateSchema } = require("../../services/validation/schema");
+const apiController = require('../controllers/apiController');
+const { requireAuth, checkUser }= require('../middleware/authMiddleware');
+const validationModule = require("../services/validation/validate");
+const { subscribeSchema, updateSchema } = require("../services/validation/schema");
 
 const router = Router();
 
