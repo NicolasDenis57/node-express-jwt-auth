@@ -10,6 +10,7 @@ const emailSchema = Joi.string().email().messages({
 
 const passwordSchema = Joi.string()
   .pattern(new RegExp('^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})'))
+  .min(10)
   .messages({
     'string.pattern.base': 'Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial et faire au moins 10 caractères',
     'string.min': 'Le mot de passe doit contenir au moins 10 caractères',
@@ -17,8 +18,8 @@ const passwordSchema = Joi.string()
   });
 
 const nameSchema = Joi.string()
-  .pattern(new RegExp('^[a-zA-Z]+$'))
-  .min(1)
+  .pattern(new RegExp('^[a-zA-Z]+(?:[-\s][a-zA-Z]+)?$'))
+  .min(2)
   .messages({
     'string.pattern.base': 'Le prénom et/ou le nom doit contenir uniquement des lettres',
     'string.min': 'Le prénom et/ou le nom doit contenir au moins 1 caractère',
