@@ -5,8 +5,8 @@ const APIError = require("../services/error/APIError");
 const jwt = require('jsonwebtoken');
 
 const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: maxAge});
+const createToken = (user) => {
+  return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: maxAge});
 }
 
 const authController = {
@@ -16,9 +16,9 @@ const authController = {
     try {
       
       const user = await User.login(email, password);
-      const token = createToken(user.id);
+      const token = createToken(user);
       res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
-      res.status(200).json({user : user.id, token: token});
+      res.status(200).json({role: user.role, accessToken : token}) ;
     
  
     }catch(err) {
