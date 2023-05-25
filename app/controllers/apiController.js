@@ -53,8 +53,10 @@ const apiController = {
     
         try {
           const hashedPassword = await bcrypt.hash(password, 10);
+
+          const preparedEmail = email.toLowerCase();
     
-          const user = await User.create({ email, password: hashedPassword, lastname, firstname });
+          const user = await User.create({ email : preparedEmail, password: hashedPassword, lastname, firstname });
           // On envoie un code 201 pour indiquer que la requête a été traitée avec succès et qu'un nouvel élément a été créé. le code 201 correspond à la création d'un nouvel élément.
           const token = createToken(user);
           res.status(201).json({role: user.role, accessToken : token});
