@@ -10,21 +10,18 @@ const createToken = (user) => {
 }
 
 const authController = {
- 
   async login_post(req, res, next) {
     const { email, password } = req.body;
     try {
+      const lowercaseEmail = email.toLowerCase();
       
-      const user = await User.login(email, password);
+      const user = await User.login(lowercaseEmail, password);
+      
       const token = createToken(user);
-      res.status(200).json({role: user.role, accessToken : token});
-    
- 
-    }catch(err) {
-      
+      res.status(200).json({ role: user.role, accessToken: token });
+    } catch (err) {
       next(new APIError(err.message, 400));
     }
-
   },
 };
 
