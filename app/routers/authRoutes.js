@@ -8,6 +8,10 @@ const router = Router();
 
 router.post('/login', validationModule.validate('body', loginSchema), authController.login_post);
 
+router.get('/refresh', authController.handleRefreshToken);
+
+router.get('/logout', authController.handleLogout);
+
 module.exports = router;
 
 

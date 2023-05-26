@@ -2,14 +2,9 @@
 const User = require("../models/AppUser");
 // On appelle ici le service d'erreur APIError qui permet de gérer les erreurs de manière plus propre.
 const APIError = require("../services/error/APIError");
-const jwt = require('jsonwebtoken');
+
 
 const bcrypt = require("bcrypt");
-
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: maxAge});
-}
 
 const apiController = {
 
@@ -28,7 +23,7 @@ const apiController = {
 
     async getUserById(req, res, next) {
         try {
-            const user = await User.findOne(req.params.id);
+            const user = await User.findOneByField('id', req.params.id);
 
             if (!user) {
                 return next(new APIError("Utilisateur non trouvé", 404));
@@ -58,8 +53,7 @@ const apiController = {
     
           const user = await User.create({ email : lowercaseEmail, password: hashedPassword, lastname, firstname });
           // On envoie un code 201 pour indiquer que la requête a été traitée avec succès et qu'un nouvel élément a été créé. le code 201 correspond à la création d'un nouvel élément.
-          const token = createToken(user);
-          res.status(201).json({role: user.role, accessToken : token});
+          res.status(201).json({user});
         } catch (err) {
           // On vérifie si l'erreur est une erreur de contrainte de clé unique, si c'est le cas on renvoie une erreur 400 (Bad Request) avec un message d'erreur personnalisé.
           if (err.code === "23505" && err.constraint === "app_user_email_key") {

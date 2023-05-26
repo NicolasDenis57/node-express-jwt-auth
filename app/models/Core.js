@@ -43,9 +43,9 @@ class Core {
     return response.rows;
   }
 
-  static async findOne(id) {
-    const sqlQuery = `SELECT * FROM ${this.tableName} WHERE id = $1`;
-    const response = await dbClient.query(sqlQuery, [id]);
+  static async findOneByField(fieldName, value) {
+    const sqlQuery = `SELECT * FROM ${this.tableName} WHERE ${fieldName} = $1`;
+    const response = await dbClient.query(sqlQuery, [value]);
     return response.rows[0];
   }
 

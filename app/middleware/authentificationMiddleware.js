@@ -8,7 +8,7 @@ function requireAuth(req, _, next) {
   if (!token) {
     return next(new APIError("Unauthorized", 401));
   }
-  jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
     if (error) {
       if (error.name === "TokenExpiredError") {
         return next(new APIError("Token expired", 401));
@@ -16,7 +16,7 @@ function requireAuth(req, _, next) {
         return next(new APIError("Forbidden", 403));
       }
     }
-    req.user = user;
+    req.user = user.email;
     next();
   });
 }
