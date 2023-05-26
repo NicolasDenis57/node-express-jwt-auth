@@ -1,20 +1,33 @@
-// Ce routeur regrouper les routes liées à l'authentification.
+// Ce routeur regrouper les routes liées à l'authentification coté back
 const { Router } = require('express');
 const authController = require('../controllers/authController');
-const { checkUser, blockRouteIfAuth } = require('../middleware/authMiddleware');
 const validationModule = require("../services/validation/validate");
 const { loginSchema } = require("../services/validation/schema");
 
 const router = Router();
 
+router.post('/login', validationModule.validate('body', loginSchema), authController.login_post);
 
-router.get('*', checkUser );
+router.get('/refresh', authController.handleRefreshToken);
 
-router.get('/signup', blockRouteIfAuth, authController.signup_get);
-
-router.get('/login', blockRouteIfAuth, authController.login_get);
-router.post('/login', blockRouteIfAuth, validationModule.validate('body', loginSchema), authController.login_post);
-
-router.get('/logout', authController.logout_get);
+router.get('/logout', authController.handleLogout);
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

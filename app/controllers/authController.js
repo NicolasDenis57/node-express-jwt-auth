@@ -4,39 +4,72 @@ const User = require("../models/AppUser");
 const APIError = require("../services/error/APIError");
 const jwt = require('jsonwebtoken');
 
-const bcrypt = require("bcrypt");
-
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: maxAge});
-}
 
 const authController = {
-  signup_get(req, res) {
-    res.render("signup");
-  },
-  login_get(req, res) {
-    res.render("login");
-  },
   async login_post(req, res, next) {
     const { email, password } = req.body;
-
     try {
-    
-      const user = await User.login(email, password);
-      const token = createToken(user.id);
-      res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
-      res.status(200).json({user : user.id});
-    
- 
-    }catch(err) {
+      const lowerCaseEmail = email.toLowerCase();
+      
+      const foundUser = await User.login(lowerCaseEmail, password);
+
+      const accessToken = jwt.sign({ 'email': email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'});
+      const refreshToken = jwt.sign({ 'email': email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
+
+      const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
+      console.log(result)
+
+      res.cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 *1000});
+
+      res.status(200).json({ role: foundUser.role, accessToken });
+    } catch (err) {
       next(new APIError(err.message, 400));
     }
-
   },
-  async logout_get(req, res) {
-    res.cookie('jwt', '', { maxAge: 1 });
-    res.redirect('/');
+  async handleRefreshToken(req, res) {
+    const cookies = req.cookies
+    if (!cookies?.jwt) return new APIError('Unauthorized', 401);
+    const refreshToken = cookies.jwt
+
+    const foundUser = await User.findOneByField('refreshtoken', refreshToken);
+
+    if (!foundUser) return new APIError('Forbidden', 403);
+
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, user) => {
+        if (err || foundUser.email !== user.email) return new APIError('Forbidden', 403);
+        const accessToken = jwt.sign(
+          {"email": user.email},
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: '30s'}
+        );
+        res.json({ accessToken })
+      }
+    );
+  },
+
+  async handleLogout(req, res) {
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return new APIError('No content to send back', 204);
+    let refreshToken = cookies.jwt;
+
+    const foundUser = await User.findOneByField('refreshToken', refreshToken);
+
+    if (!foundUser) {
+      res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 *1000});
+      return new APIError('No content to send back', 204);
+    }
+
+    refreshToken = ''
+
+    const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
+    console.log(result)
+
+    res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 *1000}); // secure: true - only serves on https
+    res.sendStatus(204);
+    
   }
 };
 

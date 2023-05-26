@@ -4,11 +4,17 @@ const APIError = require("./APIError");
 const errorModule = {
  
     async manage(err, req, res, next) {
+        const errorMessage = err.message || 'Bad request';
         // le switch permet de gérer les erreurs en fonction du code de l'erreur. si le code de l'erreur est 400 on renvoie un message d'erreur personnalisé, si le code de l'erreur est 404 on renvoie un message d'erreur personnalisé, sinon on renvoie un message d'erreur par défaut.
         switch (err.code) {
             case 400:
-                const errorMessage = err.message || 'Bad request';
                 res.status(400).json(errorMessage);
+                break;
+            case 401:
+                res.status(err.code).json(errorMessage);
+                break;
+            case 403:
+                res.status(err.code).json(errorMessage)
                 break;
             case 404:
                 res.status(404).json("Not found");

@@ -8,7 +8,8 @@ CREATE TABLE  app_user (
     lastname text not null,
     email text unique not null,
     password text not null,
-    role varchar(10) default 'member' 
+    role varchar(10) default 'member',
+    refreshToken text
 );
 
 CREATE UNIQUE INDEX email_idx ON app_user (email);
