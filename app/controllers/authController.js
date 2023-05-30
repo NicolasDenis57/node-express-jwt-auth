@@ -6,19 +6,18 @@ const jwt = require('jsonwebtoken');
 
 
 const authController = {
-  async login_post(req, res, next) {
+  async handleLogin(req, res, next) {
     const { email, password } = req.body;
     try {
       const lowerCaseEmail = email.toLowerCase();
       
       const foundUser = await User.login(lowerCaseEmail, password);
 
-      const accessToken = jwt.sign({ 'email': email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'});
-      const refreshToken = jwt.sign({ 'email': email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
+      const accessToken = jwt.sign({ 'email': email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'});
+      const refreshToken = jwt.sign({ 'email': email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '15s'});
 
       const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
-      console.log(result)
-
+      
       res.cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 *1000});
 
       res.status(200).json({ role: foundUser.role, accessToken });
@@ -26,24 +25,25 @@ const authController = {
       next(new APIError(err.message, 400));
     }
   },
+
   async handleRefreshToken(req, res) {
     const cookies = req.cookies
     if (!cookies?.jwt) return new APIError('Unauthorized', 401);
     const refreshToken = cookies.jwt
 
     const foundUser = await User.findOneByField('refreshtoken', refreshToken);
-
+    
     if (!foundUser) return new APIError('Forbidden', 403);
 
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
-      (err, user) => {
-        if (err || foundUser.email !== user.email) return new APIError('Forbidden', 403);
+      (err, user) => { 
+        if (err || foundUser.email !== user.email) return res.sendStatus(403);
         const accessToken = jwt.sign(
           {"email": user.email},
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '30s'}
+          { expiresIn: '15s'}
         );
         res.json({ accessToken })
       }
