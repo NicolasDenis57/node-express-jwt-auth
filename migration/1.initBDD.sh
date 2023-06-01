@@ -16,6 +16,9 @@ echo "admin_smoothies créé"
 createdb smoothies -O admin_smoothies
 echo "BDD créée"
 
+# Modification de l'utilisateur admin_smoothies pour qu'il soit superutilisateur
+psql -U $PGUSER -d smoothies -c "ALTER USER admin_smoothies WITH SUPERUSER;"
+
 # Je supprime sqitch.conf et sqitch.plan
 rm sqitch.conf
 rm sqitch.plan

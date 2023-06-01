@@ -3,10 +3,9 @@ const User = require("../models/AppUser");
 // On appelle ici le service d'erreur APIError qui permet de gérer les erreurs de manière plus propre.
 const APIError = require("../services/error/APIError");
 
-
 const bcrypt = require("bcrypt");
 
-const apiController = {
+const usersController = {
 
     async getAllUsers(req, res, next) {
         try {
@@ -90,7 +89,23 @@ const apiController = {
         } catch (err) {
             next(err);
         }
-    }
+    },
+
+    async getAllRecipes(req, res, next) {
+        try {
+            const recipes = await Recipe.findAll();
+            res.status(200).json(recipes);
+
+            if(!recipes) {
+                return next(new APIError("Aucune recette trouvée", 404));
+            }
+        } catch (err) {
+            next(err);
+        }
+    },
+
+
+
 }
 
-module.exports = apiController;
+module.exports = usersController;

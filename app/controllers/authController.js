@@ -14,7 +14,7 @@ const authController = {
       const foundUser = await User.login(lowerCaseEmail, password);
 
       const accessToken = jwt.sign({ 'email': email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'});
-      const refreshToken = jwt.sign({ 'email': email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '15s'});
+      const refreshToken = jwt.sign({ 'email': email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '5m'});
 
       const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
       
@@ -32,7 +32,7 @@ const authController = {
     const refreshToken = cookies.jwt
 
     const foundUser = await User.findOneByField('refreshtoken', refreshToken);
-    
+
     if (!foundUser) return new APIError('Forbidden', 403);
 
     jwt.verify(
@@ -43,7 +43,7 @@ const authController = {
         const accessToken = jwt.sign(
           {"email": user.email},
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: '15s'}
+          { expiresIn: '10s'}
         );
         res.json({ accessToken })
       }
@@ -65,8 +65,7 @@ const authController = {
     refreshToken = ''
 
     const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
-    console.log(result)
-
+    
     res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 *1000}); // secure: true - only serves on https
     res.sendStatus(204);
     

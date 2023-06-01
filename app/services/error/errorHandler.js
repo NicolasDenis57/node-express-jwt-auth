@@ -17,7 +17,7 @@ const errorModule = {
                 res.status(err.code).json(errorMessage)
                 break;
             case 404:
-                res.status(404).json("Not found");
+                res.status(404).json(errorMessage);
                 break;
             default:
                 res.status(500).json("Internal server error");
@@ -27,7 +27,7 @@ const errorModule = {
     },
     // dans le cas de la 404 on renvoie un message d'erreur personnalisé.
     _404(_, __, next) {
-        next(new APIError('Not found', 404));
+        next(new APIError("Not Found", 404));
     },
 };
 

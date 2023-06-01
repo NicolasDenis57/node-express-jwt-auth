@@ -14,4 +14,13 @@ CREATE TABLE  app_user (
 
 CREATE UNIQUE INDEX email_idx ON app_user (email);
 
+
+CREATE TABLE recipe (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name text not null,
+    ingredients text not null,
+    img BYTEA,
+    user_id INT REFERENCES app_user(id)
+);
+
 COMMIT;
