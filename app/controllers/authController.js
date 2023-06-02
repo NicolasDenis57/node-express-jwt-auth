@@ -13,14 +13,16 @@ const authController = {
       
       const foundUser = await User.login(lowerCaseEmail, password);
 
-      const accessToken = jwt.sign({ 'email': email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'});
-      const refreshToken = jwt.sign({ 'email': email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '5m'});
+      const role = Object.values(foundUser.role);
 
-      const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
+      const accessToken = jwt.sign({ 'email': email, role,'UserInfo' : { 'firstname' : foundUser.firstname } }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+      const refreshToken = jwt.sign({ 'firstname': foundUser.firstname }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '5m' });
+
+      await User.update({ refreshtoken : refreshToken }, foundUser.id);
       
-      res.cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 *1000});
+      res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 *1000 });
 
-      res.status(200).json({ role: foundUser.role, accessToken });
+      res.status(200).json({role: foundUser.role, accessToken });
     } catch (err) {
       next(new APIError(err.message, 400));
     }
@@ -38,14 +40,21 @@ const authController = {
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
-      (err, user) => { 
-        if (err || foundUser.email !== user.email) return res.sendStatus(403);
+      (err, decoded) => { 
+        if (err || foundUser.firstname !== decoded.firstname) return res.sendStatus(403);
+        const role = foundUser.role
+        
         const accessToken = jwt.sign(
-          {"email": user.email},
+          {
+            "UserInfo" : {
+              "firstname": decoded.firstname,
+              "role": role
+            }
+          },
           process.env.ACCESS_TOKEN_SECRET,
           { expiresIn: '10s'}
         );
-        res.json({ accessToken })
+        res.json({ role, accessToken })
       }
     );
   },
@@ -65,9 +74,11 @@ const authController = {
     refreshToken = ''
 
     const result = await User.update({refreshtoken : refreshToken}, foundUser.id);
+
+   
     
-    res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 *1000}); // secure: true - only serves on https
-    res.sendStatus(204);
+    res.clearCookie('jwt'); // secure: true - only serves on https
+    res.sendStatus(204)
     
   }
 };
