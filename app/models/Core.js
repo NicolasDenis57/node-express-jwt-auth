@@ -1,5 +1,5 @@
 // La classe Core permet de définir les méthodes de base pour les modèles. Elle est appelée dans les autres modèles pour définir les méthodes de base. Elle est donc une classe abstraite.
-const dbClient = require("../services/dataBase");
+const dbClient = require("../config/dbConn");
 // la classe Core est une classe abstraite, elle ne peut pas être instanciée.
 class Core {
   constructor(obj) {

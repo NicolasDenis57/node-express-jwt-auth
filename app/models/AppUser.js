@@ -1,6 +1,6 @@
 // On appelle ici le model Core qui défini les méthodes de base pour les modèles.
 const Core = require("./Core");
-const dbClient = require("../services/dataBase");
+const dbClient = require("../config/dbConn");
 const bcrypt = require("bcrypt");
 // On crée ici la classe AppUser qui hérite de la classe Core. Cette classe permet de définir les propriétés de l'objet AppUser.
 class AppUser extends Core {

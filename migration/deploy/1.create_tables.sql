@@ -2,13 +2,14 @@
 
 BEGIN;
 
+
 CREATE TABLE  app_user ( 
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     firstname text not null,
     lastname text not null,
     email text unique not null,
     password text not null,
-    role varchar(10) default 'member',
+    role INT DEFAULT 2001,
     refreshToken text
 );
 

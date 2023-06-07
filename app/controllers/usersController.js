@@ -90,22 +90,6 @@ const usersController = {
             next(err);
         }
     },
-
-    async getAllRecipes(req, res, next) {
-        try {
-            const recipes = await Recipe.findAll();
-            res.status(200).json(recipes);
-
-            if(!recipes) {
-                return next(new APIError("Aucune recette trouvée", 404));
-            }
-        } catch (err) {
-            next(err);
-        }
-    },
-
-
-
 }
 
 module.exports = usersController;
